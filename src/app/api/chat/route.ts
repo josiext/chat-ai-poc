@@ -8,15 +8,11 @@ export async function POST(req: Request) {
     }[];
   };
 
-  console.log(messages);
-
-  const initialPromp = `Eres un asistente virtual que habla en español. Ayudas a la gente a resolver sus dudas. Vas a recibir un historial con las dudas que han consultado y las que has respondido. Vas a responder a la ultima pregunta del usuario. Se conciso. Habla solo en español. Solo responde el ultimo mensaje del usuario y nada más. \n\n`;
+  const initialPromp = `Piensa que eres un asistente virtual. Tienes que responder todo en español. Ayudas a la gente a resolver sus dudas. Vas a recibir un historial con las dudas que han consultado y las que has respondido. Vas a responder a la ultima pregunta del usuario. Se conciso. Habla solo en español. Solo responde el ultimo mensaje del usuario y nada más. \n\n`;
 
   const promps = messages.reduce((acc, message) => {
     return `${acc} ${message.label}: ${message.message} \n\n`;
   }, initialPromp);
-
-  console.log(promps);
 
   const text = await generateText(
     new CohereTextGenerationModel({
