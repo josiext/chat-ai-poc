@@ -5,8 +5,8 @@ env.allowLocalModels = false;
 
 // Use the Singleton pattern to enable lazy construction of the pipeline.
 class PipelineSingleton {
-  static task = "text-classification";
-  static model = "Xenova/distilbert-base-uncased-finetuned-sst-2-english";
+  static task = "question-answering";
+  static model = "Xenova/distilbert-base-uncased-distilled-squad";
   static instance = null;
 
   static async getInstance(progress_callback = null) {
@@ -27,8 +27,17 @@ self.addEventListener("message", async (event) => {
     self.postMessage(x);
   });
 
+  console.log("aqui");
+
+  console.log("text", event.data.text);
+
   // Actually perform the classification
-  let output = await classifier(event.data.text);
+  let output = await classifier(
+    event.data.text,
+    "Chile is a country in america and it has 21 million of people. United State is a country in america and it has 328 million of people. Argentina is good at football"
+  );
+
+  console.log({ output });
 
   // Send the output back to the main thread
   self.postMessage({

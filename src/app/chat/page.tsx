@@ -4,10 +4,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 export default function Home() {
   const [result, setResult] = useState(null);
-  const [ready, setReady] = useState(null);
+  const [ready, setReady] = useState<boolean | null>(null);
 
   // Create a reference to the worker object.
-  const worker = useRef(null);
+  const worker = useRef<Worker | null>(null);
 
   // We use the `useEffect` hook to set up the worker as soon as the `App` component is mounted.
   useEffect(() => {
@@ -20,6 +20,8 @@ export default function Home() {
 
     // Create a callback function for messages from the worker thread.
     const onMessageReceived = (e) => {
+      console.log(e.data);
+
       switch (e.data.status) {
         case "initiate":
           setReady(false);
@@ -28,7 +30,7 @@ export default function Home() {
           setReady(true);
           break;
         case "complete":
-          setResult(e.data.output[0]);
+          setResult(e.data?.output?.answer || "");
           break;
       }
     };
@@ -52,14 +54,21 @@ export default function Home() {
       <h1 className="text-5xl font-bold mb-2 text-center">Transformers.js</h1>
       <h2 className="text-2xl mb-4 text-center">Next.js template</h2>
 
-      <input
-        className="w-full max-w-xs p-2 border border-gray-300 rounded mb-4"
-        type="text"
-        placeholder="Enter text here"
-        onInput={(e) => {
-          classify(e.target.value);
+      <form
+        className="flex flex-row gap-2 items-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          classify(e.target[0].value);
         }}
-      />
+      >
+        <input
+          className="w-full max-w-xs p-2 border border-gray-300 rounded mb-4"
+          type="text"
+          placeholder="Enter text here"
+        />
+        <button>Aceptar</button>
+      </form>
 
       {ready !== null && (
         <pre className="bg-gray-100 p-2 rounded">
