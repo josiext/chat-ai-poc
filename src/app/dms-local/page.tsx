@@ -4,10 +4,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 export default function Home() {
   const [result, setResult] = useState(null);
-  const [ready, setReady] = useState<boolean | null>(null);
+  const [ready, setReady] = useState(null);
 
   // Create a reference to the worker object.
-  const worker = useRef<Worker | null>(null);
+  const worker = useRef(null);
 
   // We use the `useEffect` hook to set up the worker as soon as the `App` component is mounted.
   useEffect(() => {
