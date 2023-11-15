@@ -1,80 +1,36 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useChat } from "ai/react";
 
-export default function Home() {
-  const [result, setResult] = useState(null);
-  const [ready, setReady] = useState<boolean | null>(null);
-
-  // Create a reference to the worker object.
-  const worker = useRef<Worker | null>(null);
-
-  // We use the `useEffect` hook to set up the worker as soon as the `App` component is mounted.
-  useEffect(() => {
-    if (!worker.current) {
-      // Create the worker if it does not yet exist.
-      worker.current = new Worker(new URL("./worker.js", import.meta.url), {
-        type: "module",
-      });
-    }
-
-    // Create a callback function for messages from the worker thread.
-    const onMessageReceived = (e) => {
-      console.log(e.data);
-
-      switch (e.data.status) {
-        case "initiate":
-          setReady(false);
-          break;
-        case "ready":
-          setReady(true);
-          break;
-        case "complete":
-          setResult(e.data?.output?.[0].generated_text || "");
-          break;
-      }
-    };
-
-    // Attach the callback function as an event listener.
-    worker.current.addEventListener("message", onMessageReceived);
-
-    // Define a cleanup function for when the component is unmounted.
-    return () =>
-      worker.current.removeEventListener("message", onMessageReceived);
+export default function Chat() {
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: "/api/chat-model",
   });
 
-  const classify = useCallback((text) => {
-    if (worker.current) {
-      worker.current.postMessage({ text });
-    }
-  }, []);
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-12">
-      <h1 className="text-5xl font-bold mb-2 text-center">Transformers.js</h1>
-      <h2 className="text-2xl mb-4 text-center">Next.js template</h2>
-
-      <form
-        className="flex flex-row gap-2 items-center"
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          classify(e.target[0].value);
-        }}
-      >
+    <main className="mx-auto w-full h-screen max-w-lg p-24 flex flex-col">
+      <section className="mb-auto m">
+        {messages.map((m) => (
+          <div className="mb-4" key={m.id}>
+            {m.role === "user" ? "User: " : "AI: "}
+            {m.content}
+          </div>
+        ))}
+      </section>
+      <form className="flex space-x-4" onSubmit={handleSubmit}>
         <input
-          className="w-full max-w-xs p-2 border border-gray-300 rounded mb-4"
-          type="text"
-          placeholder="Enter text here"
+          className="rounded-md p-2 text-black"
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Say something..."
         />
-        <button>Aceptar</button>
+        <button
+          className="border-solid border-2 border-white p-2 rounded-md"
+          type="submit"
+        >
+          Send
+        </button>
       </form>
-
-      {ready !== null && (
-        <pre className="bg-gray-100 p-2 rounded">
-          {!ready || !result ? "Loading..." : JSON.stringify(result, null, 2)}
-        </pre>
-      )}
     </main>
   );
 }

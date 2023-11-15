@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/chat/worker.js"
+    "src/app/chat-local/worker.js"
   ],
   "exclude": ["node_modules"]
 }
