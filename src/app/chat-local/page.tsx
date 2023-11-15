@@ -6,22 +6,16 @@ export default function Home() {
   const [result, setResult] = useState(null);
   const [ready, setReady] = useState<boolean | null>(null);
 
-  // Create a reference to the worker object.
   const worker = useRef<Worker | null>(null);
 
-  // We use the `useEffect` hook to set up the worker as soon as the `App` component is mounted.
   useEffect(() => {
     if (!worker.current) {
-      // Create the worker if it does not yet exist.
       worker.current = new Worker(new URL("./worker.js", import.meta.url), {
         type: "module",
       });
     }
 
-    // Create a callback function for messages from the worker thread.
-    const onMessageReceived = (e) => {
-      console.log(e.data);
-
+    const onMessageReceived = (e: any) => {
       switch (e.data.status) {
         case "initiate":
           setReady(false);
@@ -35,15 +29,13 @@ export default function Home() {
       }
     };
 
-    // Attach the callback function as an event listener.
     worker.current.addEventListener("message", onMessageReceived);
 
-    // Define a cleanup function for when the component is unmounted.
     return () =>
-      worker.current.removeEventListener("message", onMessageReceived);
+      worker?.current?.removeEventListener("message", onMessageReceived);
   });
 
-  const classify = useCallback((text) => {
+  const classify = useCallback((text: string) => {
     if (worker.current) {
       worker.current.postMessage({ text });
     }
@@ -58,7 +50,6 @@ export default function Home() {
         className="flex flex-row gap-2 items-center"
         onSubmit={(e) => {
           e.preventDefault();
-
           classify(e.target[0].value);
         }}
       >
