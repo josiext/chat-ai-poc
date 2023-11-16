@@ -1,11 +1,13 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ChangeEvent, useState } from "react";
 import { MdOutlineFilePresent } from "react-icons/md";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen relative">
+    <main className="flex min-h-screen relative bg-neutral-100">
       <div className="flex flex-1">
         <DMS />
       </div>
@@ -87,7 +89,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="inline-flex min-h-screen w-[400px] flex-col items-center justify-between p-4 bg-neutral-300">
+    <div className="inline-flex min-h-screen w-[400px] flex-col items-center justify-between p-4 bg-white shadow-md">
       <div className="w-full">
         {chat.map((item) => (
           <div
@@ -112,28 +114,15 @@ const Sidebar = () => {
         />
 
         <form className="w-full" onSubmit={handleSubmit}>
-          <label
-            htmlFor="default-search"
-            className="mb-2 text-sm font-medium sr-only text-white"
-          >
-            Search
-          </label>
           <div className="flex flex-row gap-2">
-            <input
+            <Input
               type="search"
-              id="default-search"
-              className="block w-full p-4 pl-10 text-sm  border  rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Write..."
+              placeholder="Escribe aquí..."
               required
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
-            <button
-              type="submit"
-              className="text-white  focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
-            >
-              Search
-            </button>
+            <Button type="submit">Buscar</Button>
           </div>
         </form>
       </div>
@@ -145,37 +134,37 @@ const DMS = () => {
   const [view, setView] = useState("Contratos");
 
   return (
-    <div className="p-8 flex flex-col gap-10">
-      <div className="flex gap-7 ">
-        {["Contratos", "Clientes", "Proyectos"].map((item) => (
-          <button
-            key={item}
-            className="inline-flex flex-col items-center justify-center p-4 mb-4 rounded-lg bg-gray-800"
-            onClick={() => setView(item)}
-          >
-            <p className="text-2xl font-semibold  text-white">{item}</p>
-          </button>
-        ))}
+    <div className="flex flex-col bg-neutral-100 w-full">
+      <div className="text-4xl font-bold text-neutral-700 bg-white px-4 py-6 text-center shadow-md">
+        DMS.AI
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,150px))] gap-4">
-        {view === "Contratos" && (
-          <>
-            {CONTRATOS.map((item) => (
-              <button
-                key={item.id}
-                className="flex flex-col gap-3 items-center justify-start p-4 mb-4 rounded-lg bg-gray-800"
-              >
-                <MdOutlineFilePresent className="w-8 h-8  text-white" />
+      <div className="p-10 flex flex-col gap-10">
+        <div className="flex gap-7 ">
+          {["Contratos", "Clientes", "Proyectos"].map((item) => (
+            <Button key={item}>{item}</Button>
+          ))}
+        </div>
 
-                <div className="flex flex-col gap-1">
-                  <span>{item.name}</span>
-                  <span className="text-xs">{item.description}</span>
-                </div>
-              </button>
-            ))}
-          </>
-        )}
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,150px))] gap-4">
+          {view === "Contratos" && (
+            <>
+              {CONTRATOS.map((item) => (
+                <button
+                  key={item.id}
+                  className="flex flex-col gap-3 items-center justify-start p-4 mb-4 rounded-lg bg-white"
+                >
+                  <MdOutlineFilePresent className="w-8 h-8" />
+
+                  <div className="flex flex-col gap-1">
+                    <span>{item.name}</span>
+                    <span className="text-xs">{item.description}</span>
+                  </div>
+                </button>
+              ))}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -185,21 +174,17 @@ const CONTRATOS = [
   {
     id: 1,
     name: "Contrato 1",
-    description: "Descripcion 1",
   },
   {
     id: 2,
     name: "Contrato 2",
-    description: "Descripcion 2",
   },
   {
     id: 3,
     name: "Contrato 3",
-    description: "Descripcion 3",
   },
   {
     id: 4,
     name: "Contrato 4",
-    description: "Descripcion 4",
   },
 ];
