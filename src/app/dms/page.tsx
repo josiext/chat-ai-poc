@@ -1,7 +1,6 @@
 "use client";
 
 import { Files } from "./Files";
-import { Sidebar } from "./Sidbar";
 
 export default function Home() {
   return (
@@ -9,8 +8,6 @@ export default function Home() {
       <div className="flex flex-1">
         <Files />
       </div>
-
-      <Sidebar />
     </main>
   );
 }
