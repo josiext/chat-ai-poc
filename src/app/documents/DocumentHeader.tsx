@@ -7,28 +7,35 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
   const inputRef = useRef(null);
 
   const handleClick = () => {
-    console.log("aqui");
     // @ts-ignore
     inputRef?.current?.click();
   };
 
-  const handleFileChange = (event: any) => {
+  const handleFileChange = async (event: any) => {
     const fileObj = event.target.files && event.target.files[0];
     if (!fileObj) {
       return;
     }
 
-    console.log("fileObj is", fileObj);
+    const file = event?.target?.files?.[0];
 
-    // 👇️ reset file input
-    event.target.value = null;
+    if (!file) return;
 
-    // 👇️ is now empty
-    console.log(event.target.files);
+    const formData = new FormData();
+    formData.append("pdfFile", file);
 
-    // 👇️ can still access file object here
-    console.log(fileObj);
-    console.log(fileObj.name);
+    const res = await fetch("/api/read-pdf", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Error al leer el archivo");
+
+    const text = await res.json();
+
+    console.log(text);
+
+    // TODO send to api
   };
 
   return (
