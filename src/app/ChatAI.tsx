@@ -22,6 +22,8 @@ export const ChatAI = () => {
     e.preventDefault();
     const message = e.target[0].value as string;
 
+    if (!message?.trim()) return;
+
     e.target[0].value = "";
 
     const newMessages = [
