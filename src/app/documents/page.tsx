@@ -1,6 +1,5 @@
 "use client";
 
-import { fetcher } from "@/utils/fetcher";
 import useSWR from "swr";
 import { DocumentHeader } from "./DocumentHeader";
 import { Button } from "@/components/ui/button";
@@ -12,11 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const API_URL = "https://jsonplaceholder.typicode.com/todos/1";
+import { DocumentApi } from "@/apis/Document";
 
 export default function Documents() {
-  const { data = [], error, isLoading } = useSWR(API_URL, fetcher);
+  const { data = [] } = useSWR("get-documents", DocumentApi.get);
 
   const handleSelectCategory = () => {};
 
@@ -46,9 +44,9 @@ export default function Documents() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {REGISTERS.map((invoice) => (
-              <TableRow key={invoice.label}>
-                <TableCell className="font-medium">{invoice.label}</TableCell>
+            {data.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell>
                   <Button variant="ghost">Descargar</Button>
                 </TableCell>
@@ -66,12 +64,4 @@ const DOC_CATEGORIES = [
   { label: "Clientes", href: "/documents/clients" },
   { label: "Contratos", href: "/documents/contracts" },
   { label: "Proveedores", href: "/documents/suppliers" },
-];
-
-const REGISTERS = [
-  { label: "Documento 1", link: "" },
-  { label: "Documento 2", link: "" },
-  { label: "Documento 3", link: "" },
-  { label: "Documento 4", link: "" },
-  { label: "Documento 5", link: "" },
 ];

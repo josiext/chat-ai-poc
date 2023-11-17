@@ -1,5 +1,6 @@
 "use client";
 
+import { DocumentApi } from "@/apis/Document";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 
@@ -12,30 +13,15 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
   };
 
   const handleFileChange = async (event: any) => {
-    const fileObj = event.target.files && event.target.files[0];
-    if (!fileObj) {
-      return;
-    }
-
-    const file = event?.target?.files?.[0];
-
-    if (!file) return;
+    const files = event?.target?.files;
+    if (!files?.length) return;
 
     const formData = new FormData();
-    formData.append("pdfFile", file);
+    for (let i = 0; i < files.length; i++) formData.append("files", files[i]);
 
-    const res = await fetch("/api/read-pdf", {
-      method: "POST",
-      body: formData,
-    });
+    const res = await DocumentApi.save(formData);
 
-    if (!res.ok) throw new Error("Error al leer el archivo");
-
-    const text = await res.json();
-
-    console.log(text);
-
-    // TODO send to api
+    console.log(res);
   };
 
   return (
@@ -50,6 +36,8 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
         ref={inputRef}
         style={{ display: "none" }}
         onChange={handleFileChange}
+        multiple
+        accept=".pdf,.doc,.docx,.xls,.xlsx"
       />
     </div>
   );
