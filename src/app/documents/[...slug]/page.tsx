@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DocumentHeader } from "../DocumentHeader";
 
 export default function DocumentCategory({
   params,
@@ -15,7 +16,7 @@ export default function DocumentCategory({
 }) {
   return (
     <div className="flex flex-col flex-grow p-4 gap-4">
-      <h1 className="text-2xl font-semibold text-neutral-900">{params.slug}</h1>
+      <DocumentHeader title={params.slug} />
 
       <div>
         <Table>

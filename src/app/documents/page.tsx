@@ -3,6 +3,7 @@
 import { fetcher } from "@/utils/fetcher";
 import Link from "next/link";
 import useSWR from "swr";
+import { DocumentHeader } from "./DocumentHeader";
 
 const API_URL = "https://jsonplaceholder.typicode.com/todos/1";
 
@@ -11,7 +12,7 @@ export default function Documents() {
 
   return (
     <div className="flex flex-col flex-grow p-4 gap-10">
-      <h1 className="text-2xl font-semibold text-neutral-900">Documentos</h1>
+      <DocumentHeader title="Documentos" />
 
       <div className="grid grid-cols-4 gap-4">
         {DOC_CATEGORIES.map(({ label, href }) => (
