@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { fetcher } from "@/utils/fetcher";
 import Link from "next/link";
