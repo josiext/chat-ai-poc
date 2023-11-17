@@ -56,9 +56,12 @@ export const ChatAI = () => {
       {chatOpen && (
         <div className="fixed bottom-5 right-5 bg-neutral-100 h-[80%] w-96 rounded-sm p-4 drop-shadow-lg">
           <div className="flex flex-col gap-2 h-full justify-between">
-            <Button className="self-end" onClick={() => setChatOpen(!chatOpen)}>
-              X
-            </Button>
+            <div className="self-end space-x-3">
+              <Button variant="ghost" onClick={() => setMessages([])}>
+                Limpiar
+              </Button>
+              <Button onClick={() => setChatOpen(!chatOpen)}>X</Button>
+            </div>
 
             <div className="overflow-x-auto gap-4 flex flex-col p-1">
               {messages.map((message, index) => (
