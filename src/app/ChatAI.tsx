@@ -11,12 +11,12 @@ export const ChatAI = () => {
     <>
       {!chatOpen && (
         <div className="fixed bottom-14 right-20">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          <Button
             onClick={() => setChatOpen(!chatOpen)}
+            className="rounded-full shadow-lg"
           >
             Chat AI
-          </button>
+          </Button>
         </div>
       )}
 
