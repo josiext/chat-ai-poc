@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import axios from "axios";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { ChatIcon } from "./ChatIcon";
 
 interface Message {
   content: string;
@@ -17,12 +19,13 @@ const MESSAGES: Message[] = [
 export const ChatAI = () => {
   const [chatOpen, setChatOpen] = useState(true);
   const [messages, setMessages] = useState<Message[]>(MESSAGES);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleNewMessage = async (e: any) => {
     e.preventDefault();
     const message = e.target[0].value as string;
 
-    if (!message?.trim()) return;
+    if (!message?.trim() || isLoading) return;
 
     e.target[0].value = "";
 
@@ -31,6 +34,7 @@ export const ChatAI = () => {
       { content: message, role: "user" },
     ] as Message[];
 
+    setIsLoading(true);
     setMessages(newMessages);
 
     const res = await axios.post<{
@@ -47,6 +51,7 @@ export const ChatAI = () => {
       ...messages,
       { content: data.message.message.content, role: "assistant" },
     ]);
+    setIsLoading(false);
   };
 
   return (
@@ -55,9 +60,11 @@ export const ChatAI = () => {
         <div className="fixed bottom-14 right-20">
           <Button
             onClick={() => setChatOpen(!chatOpen)}
-            className="rounded-full shadow-lg"
+            className="rounded-full shadow-lg flex gap-2 items-center justify-center h-[50px]"
+            size="lg"
           >
-            Chat AI
+            <ChatIcon />
+            <span>Chat</span>
           </Button>
         </div>
       )}
@@ -65,12 +72,15 @@ export const ChatAI = () => {
       {chatOpen && (
         <div className="fixed bottom-5 right-5 bg-neutral-100 h-[80%] w-96 rounded-sm p-4 drop-shadow-lg">
           <div className="flex flex-col gap-2 h-full">
-            <div className="self-end space-x-3">
+            <div className="flex justify-between space-x-3">
+              <Button onClick={() => setChatOpen(!chatOpen)}>X</Button>
+
               <Button variant="ghost" onClick={() => setMessages([])}>
                 Limpiar
               </Button>
-              <Button onClick={() => setChatOpen(!chatOpen)}>X</Button>
             </div>
+
+            <div className="border-b-2 border-neutral-200 mb-2 " />
 
             <div className="overflow-x-auto gap-4 flex flex-col p-1 flex-1">
               {messages.map((message, index) => (
@@ -96,10 +106,17 @@ export const ChatAI = () => {
               ))}
             </div>
 
+            <div className="border-b-2 border-neutral-200 mb-2 " />
             <div>
               <form onSubmit={handleNewMessage} className="flex flex-row gap-2">
                 <Input type="text" className="w-full" />
-                <Button size="sm">Enviar</Button>
+                <Button size="sm" className="w-[100px]">
+                  {isLoading ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    "Enviar"
+                  )}
+                </Button>
               </form>
             </div>
           </div>
