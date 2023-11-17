@@ -3,42 +3,49 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import axios from "axios";
 
 interface Message {
-  message: string;
-  from: "user" | "ai";
+  content: string;
+  role: "user" | "assistant";
 }
 
 const MESSAGES: Message[] = [
-  { message: "Hello, how can I assist you?", from: "ai" },
-  { message: "I need help with my code.", from: "user" },
-  { message: "Sure, what seems to be the problem?", from: "ai" },
-  { message: "I'm getting an error on line 50.", from: "user" },
-  { message: "Could you please share the error message?", from: "ai" },
-  {
-    message: "TypeError: Cannot read property 'map' of undefined",
-    from: "user",
-  },
-  {
-    message: "It seems like you're trying to map over an undefined value.",
-    from: "ai",
-  },
-  { message: "How can I fix this?", from: "user" },
-  {
-    message:
-      "You should check if the value is defined before calling map on it.",
-    from: "ai",
-  },
-  { message: "Okay, I'll try that. Thanks!", from: "user" },
-  { message: "Okay, I'll try that. Thanks!", from: "ai" },
-  { message: "Okay, I'll try that. Thanks!", from: "user" },
-  { message: "Okay, I'll try that. Thanks!", from: "ai" },
-  { message: "Okay, I'll try that. Thanks!", from: "user" },
+  { content: "Hola! ¿Cómo te puedo ayudar?", role: "assistant" },
 ];
 
 export const ChatAI = () => {
   const [chatOpen, setChatOpen] = useState(true);
   const [messages, setMessages] = useState<Message[]>(MESSAGES);
+
+  const handleNewMessage = async (e: any) => {
+    e.preventDefault();
+    const message = e.target[0].value as string;
+
+    e.target[0].value = "";
+
+    const newMessages = [
+      ...messages,
+      { content: message, role: "user" },
+    ] as Message[];
+
+    setMessages(newMessages);
+
+    const res = await axios.post<{
+      message: {
+        message: {
+          role: string;
+          content: string;
+        };
+      };
+    }>("/api/chat-model", { messages: newMessages });
+    const data = res.data;
+
+    setMessages((messages) => [
+      ...messages,
+      { content: data.message.message.content, role: "assistant" },
+    ]);
+  };
 
   return (
     <>
@@ -55,7 +62,7 @@ export const ChatAI = () => {
 
       {chatOpen && (
         <div className="fixed bottom-5 right-5 bg-neutral-100 h-[80%] w-96 rounded-sm p-4 drop-shadow-lg">
-          <div className="flex flex-col gap-2 h-full justify-between">
+          <div className="flex flex-col gap-2 h-full">
             <div className="self-end space-x-3">
               <Button variant="ghost" onClick={() => setMessages([])}>
                 Limpiar
@@ -63,24 +70,24 @@ export const ChatAI = () => {
               <Button onClick={() => setChatOpen(!chatOpen)}>X</Button>
             </div>
 
-            <div className="overflow-x-auto gap-4 flex flex-col p-1">
+            <div className="overflow-x-auto gap-4 flex flex-col p-1 flex-1">
               {messages.map((message, index) => (
                 <div
-                  className={`inline-flex flex-row gap-2 bg-white rounded-lg p-3 w-[fit-content] ${
-                    message.from === "ai" ? "self-end" : ""
+                  className={`inline-flex flex-row gap-2 bg-white rounded-lg p-3 min-w-[50%] w-[fit-content] ${
+                    message.role === "assistant" ? "self-end" : ""
                   }`}
                   key={index}
                 >
                   <div className="flex flex-col gap-1 w-full">
                     <span
                       className={`w-full text-sm font-semibold text-neutral-600 ${
-                        message.from === "ai" ? "text-right" : ""
+                        message.role === "assistant" ? "text-right" : ""
                       }`}
                     >
-                      {message.from}
+                      {message.role}
                     </span>
                     <span className="w-full text-md text-neutral-500">
-                      {message.message}
+                      {message.content}
                     </span>
                   </div>
                 </div>
@@ -88,13 +95,7 @@ export const ChatAI = () => {
             </div>
 
             <div>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  console.log("submit");
-                }}
-                className="flex flex-row gap-2"
-              >
+              <form onSubmit={handleNewMessage} className="flex flex-row gap-2">
                 <Input type="text" className="w-full" />
                 <Button size="sm">Enviar</Button>
               </form>
