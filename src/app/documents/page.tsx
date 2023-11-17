@@ -11,17 +11,15 @@ export default function Documents() {
   const { data = [], error, isLoading } = useSWR(API_URL, fetcher);
 
   return (
-    <div className="flex flex-col flex-grow p-4 gap-4">
+    <div className="flex flex-col flex-grow p-4 gap-10">
       <h1 className="text-2xl font-semibold text-neutral-900">Documentos</h1>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {DOC_CATEGORIES.map(({ label, href }) => (
           <Link key={label} href={href}>
-            <Card className="inline">
-              <CardContent className="text-lg flex justify-center items-center font-semibold text-neutral-900">
-                {label}
-              </CardContent>
-            </Card>
+            <div className="flex flex-col gap-3 items-center justify-start p-4 mb-4 rounded-lg bg-neutral-100 shadow-md hover:bg-neutral-200">
+              {label}
+            </div>
           </Link>
         ))}
       </div>
