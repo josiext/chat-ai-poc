@@ -6,6 +6,13 @@ export interface Document {
   embed_content: string;
   path: string;
   id: number;
+  url?: string;
+  tags?: string[];
+  people?: string[];
+}
+
+export interface DocumentClassify {
+  tipo: string;
 }
 
 const get = async (): Promise<Document[]> => {
@@ -23,7 +30,13 @@ const save = async (form: FormData): Promise<Document[]> => {
   return res.data;
 };
 
+const classify = async (form: FormData): Promise<DocumentClassify> => {
+  const res = await axios.post("/api/doc-classify", form);
+  return res.data;
+};
+
 export const DocumentApi = {
   get,
   save,
+  classify,
 };
