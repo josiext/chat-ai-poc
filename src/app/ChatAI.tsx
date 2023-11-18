@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ChatIcon } from "./ChatIcon";
 import { ChatApi } from "@/apis/Chat";
@@ -20,6 +20,11 @@ export const ChatAI = () => {
   const [chatOpen, setChatOpen] = useState(true);
   const [messages, setMessages] = useState<Message[]>(MESSAGES);
   const [isLoading, setIsLoading] = useState(false);
+  const msgEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    msgEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleNewMessage = async (e: any) => {
     e.preventDefault();
@@ -100,6 +105,8 @@ export const ChatAI = () => {
                   </div>
                 </div>
               ))}
+
+              <div ref={msgEndRef} />
             </div>
 
             <div className="border-b-2 border-neutral-200 mb-2 " />
