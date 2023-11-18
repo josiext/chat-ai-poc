@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import axios from "axios";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ChatIcon } from "./ChatIcon";
+import { ChatApi } from "@/apis/Chat";
 
 interface Message {
   content: string;
@@ -37,20 +37,16 @@ export const ChatAI = () => {
     setIsLoading(true);
     setMessages(newMessages);
 
-    const res = await axios.post<{
-      message: {
-        message: {
-          role: string;
-          content: string;
-        };
-      };
-    }>("/api/chat-model", { messages: newMessages });
-    const data = res.data;
+    const data = await ChatApi.chat(message);
 
-    setMessages((messages) => [
-      ...messages,
-      { content: data.message.message.content, role: "assistant" },
-    ]);
+    const messagesSorted: Message[] = data.messages.data
+      .reverse()
+      .map((message) => ({
+        content: message.content[0].text.value ?? "",
+        role: message.assistant_id ? "assistant" : "user",
+      }));
+
+    setMessages(messagesSorted);
     setIsLoading(false);
   };
 
