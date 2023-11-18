@@ -73,7 +73,12 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
     <div className="p-4 flex gap-10 items-center">
       <h1 className="text-3xl font-semibold text-neutral-900">{title}</h1>
 
-      <Button size="sm" className="w-[150px]" onClick={handleClick}>
+      <Button
+        size="sm"
+        className="w-[150px]"
+        onClick={handleClick}
+        disabled={isLoading}
+      >
         {isLoading ? (
           <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
         ) : (
