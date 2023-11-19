@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ChatIcon } from "./ChatIcon";
 import { ChatApi } from "@/apis/Chat";
+import useSWR from "swr";
+import { DocumentApi } from "@/apis/Document";
 
 interface Message {
   content: string;
@@ -21,6 +23,12 @@ export const ChatAI = () => {
   const [messages, setMessages] = useState<Message[]>(MESSAGES);
   const [isLoading, setIsLoading] = useState(false);
   const msgEndRef = useRef<HTMLDivElement>(null);
+  const { data: categories = [] } = useSWR(
+    "get-doc-categories",
+    DocumentApi.getCategories
+  );
+
+  const [categoryThreadId, setCategoryThreadId] = useState<string | null>(null);
 
   useEffect(() => {
     msgEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,7 +50,7 @@ export const ChatAI = () => {
     setIsLoading(true);
     setMessages(newMessages);
 
-    const data = await ChatApi.chat(message);
+    const data = await ChatApi.chat(message, categoryThreadId);
 
     const messagesSorted: Message[] = data.messages.data
       .reverse()
@@ -54,6 +62,12 @@ export const ChatAI = () => {
     setMessages(messagesSorted);
     setIsLoading(false);
   };
+
+  const categoriesLabels = categories.map((category) => ({
+    name: category.name,
+    thread_id: category.external_thread_id,
+    id: category.id,
+  }));
 
   return (
     <>
@@ -71,7 +85,7 @@ export const ChatAI = () => {
       )}
 
       {chatOpen && (
-        <div className="fixed bottom-5 right-5 bg-neutral-100 h-[80%] w-96 rounded-sm p-4 drop-shadow-lg">
+        <div className="fixed bottom-5 right-5 bg-neutral-100 h-[90%] w-[450px] rounded-sm p-4 drop-shadow-lg">
           <div className="flex flex-col gap-2 h-full">
             <div className="flex justify-between space-x-3">
               <Button onClick={() => setChatOpen(!chatOpen)}>X</Button>
@@ -82,6 +96,38 @@ export const ChatAI = () => {
             </div>
 
             <div className="border-b-2 border-neutral-200 mb-2 " />
+
+            <div className="space-y-1">
+              <span className="text-sm text-neutral-400">Consultar por</span>
+
+              <div className="flex flex-1 gap-2 items-center ">
+                <Button
+                  variant="outline"
+                  className={`inline-flex text-xs p-1 ${
+                    !categoryThreadId ? "bg-neutral-200" : "white"
+                  } `}
+                  onClick={() => setCategoryThreadId(null)}
+                  size="sm"
+                >
+                  Todos
+                </Button>
+                {categoriesLabels.map(({ name, thread_id }) => (
+                  <Button
+                    key={thread_id}
+                    variant="outline"
+                    className={`inline-flex text-xs  p-1 ${
+                      categoryThreadId === thread_id
+                        ? "bg-neutral-200"
+                        : "white"
+                    } `}
+                    onClick={() => setCategoryThreadId(thread_id)}
+                    title={name}
+                  >
+                    {name}
+                  </Button>
+                ))}
+              </div>
+            </div>
 
             <div className="overflow-x-auto gap-4 flex flex-col p-1 flex-1">
               {messages.map((message, index) => (
@@ -105,7 +151,6 @@ export const ChatAI = () => {
                   </div>
                 </div>
               ))}
-
               <div ref={msgEndRef} />
             </div>
 

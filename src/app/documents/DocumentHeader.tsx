@@ -43,7 +43,7 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) formData.append("files", files[i]);
 
-    /* const res = await DocumentApi.save(formData); */
+    const res = await DocumentApi.save(formData);
 
     const categories = [];
     for (let i = 0; i < files.length; i++) {
@@ -127,7 +127,12 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
                   ))}
 
                   <div className="flex gap-2 mt-10">
-                    <Button className="w-full">Aceptar</Button>
+                    <Button
+                      className="w-full"
+                      onClick={() => setDocumentUploaded([])}
+                    >
+                      Aceptar
+                    </Button>
                   </div>
                 </TableBody>
               </Table>
