@@ -75,16 +75,20 @@ export default function Documents() {
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell className="font-medium">
-                  {categoriesLabels.find(({ id }) => id === item.category_id)
-                    ?.name && (
-                    <div className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                      {
-                        categoriesLabels.find(
-                          ({ id }) => id === item.category_id
-                        )?.name
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    categoriesLabels.find(({ id }) => id === item.category_id)
+                      ?.name && (
+                      <div className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                        {
+                          categoriesLabels.find(
+                            // @ts-ignore
+                            ({ id }) => id === item.category_id
+                          )?.name
+                        }
+                      </div>
+                    )
+                  }
                 </TableCell>
                 <TableCell className="font-medium"></TableCell>
                 <TableCell></TableCell>
