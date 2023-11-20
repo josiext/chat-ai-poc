@@ -14,7 +14,7 @@ export const Sidebar = () => {
       <Link href={"/"}>
         <div className="flex flex-row items-center justify-center">
           <h1 className="text-2xl font-semibold text-neutral-900 mt-6 align-middle	">
-            DMS.AI
+            DOCU.AI
           </h1>
         </div>
       </Link>

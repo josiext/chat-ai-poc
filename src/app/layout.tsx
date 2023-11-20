@@ -7,7 +7,7 @@ import { ChatAI } from "./ChatAI";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "DMS.AI",
+  title: "DOCU.AI",
   description: "Lemontech DMS powered by a powerfull AI",
 };
 

@@ -8,7 +8,7 @@ export const Files = () => {
   return (
     <div className="flex flex-col bg-neutral-100 w-full">
       <div className="text-4xl font-bold text-neutral-700 bg-white px-4 py-6 text-center shadow-md">
-        DMS.AI
+        DOCU.AI
       </div>
 
       <div className="p-10 flex flex-col gap-10">

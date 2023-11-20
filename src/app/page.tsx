@@ -39,7 +39,7 @@ export default function Home() {
                 Documentos
               </TabsTrigger>
               <TabsTrigger value="notifications" disabled>
-                DMS.AI
+                DOCU.AI
               </TabsTrigger>
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
