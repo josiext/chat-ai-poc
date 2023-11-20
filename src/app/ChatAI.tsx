@@ -155,7 +155,17 @@ export const ChatAI = () => {
                       {message.role}
                     </span>
                     <span className="w-full text-md text-neutral-500">
-                      {message.content}
+                      {
+                        // content has break line convert to <br>
+                        message.content.split("\n").map((item, key) => {
+                          return (
+                            <span key={key}>
+                              {item}
+                              <br />
+                            </span>
+                          );
+                        })
+                      }
                     </span>
                   </div>
                 </div>
