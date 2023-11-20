@@ -39,6 +39,43 @@ const chat = async (
   return res.data;
 };
 
+export type ChatHistory = {
+  messages: {
+    data: Array<{
+      id: string;
+      assistant_id?: string;
+      content: Array<{
+        text: {
+          annotations: Array<any>;
+          value: string;
+        };
+        type: string;
+      }>;
+      created_at: number;
+      file_ids: Array<any>;
+      metadata: {};
+      object: string;
+      role: string;
+      run_id?: string;
+      thread_id: string;
+    }>;
+    object: string;
+    first_id: string;
+    last_id: string;
+    has_more: boolean;
+  };
+};
+
+const getHistory = async (thread_id?: string | null): Promise<ChatHistory> => {
+  let url = `${BACKEND_URL}/chat`;
+  if (thread_id) url += `?thread_id=${thread_id}`;
+
+  const res = await axios.get(url);
+
+  return res.data;
+};
+
 export const ChatApi = {
   chat,
+  getHistory,
 };

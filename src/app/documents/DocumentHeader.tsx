@@ -43,7 +43,7 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) formData.append("files", files[i]);
 
-    const res = await DocumentApi.save(formData);
+    await DocumentApi.save(formData);
 
     const categories = [];
     for (let i = 0; i < files.length; i++) {
@@ -57,7 +57,7 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
     setDocumentUploaded(
       categories.map((category, idx) => ({
         id: idx,
-        name: "Documento " + (idx + 1),
+        name: files[idx].name,
         tags: category.tipo,
         people: category.personas,
       }))
@@ -92,7 +92,7 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
         style={{ display: "none" }}
         onChange={handleFileChange}
         multiple
-        accept=".pdf,.doc,.docx,.xls,.xlsx"
+        accept=".pdf"
       />
 
       <Dialog
@@ -125,17 +125,17 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
                       </TableCell>
                     </TableRow>
                   ))}
-
-                  <div className="flex gap-2 mt-10">
-                    <Button
-                      className="w-full"
-                      onClick={() => setDocumentUploaded([])}
-                    >
-                      Aceptar
-                    </Button>
-                  </div>
                 </TableBody>
               </Table>
+
+              <div className="flex  justify-end gap-2 mt-10">
+                <Button
+                  className="flex w-[150px]"
+                  onClick={() => setDocumentUploaded([])}
+                >
+                  Aceptar
+                </Button>
+              </div>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

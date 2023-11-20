@@ -63,6 +63,19 @@ export const ChatAI = () => {
     setIsLoading(false);
   };
 
+  const handleChangeCategory = async (id: string | null) => {
+    setCategoryThreadId(id);
+    const history = await ChatApi.getHistory(id);
+    const messagesSorted: Message[] = history.messages.data
+      .reverse()
+      .map((message) => ({
+        content: message.content[0].text.value ?? "",
+        role: message.assistant_id ? "assistant" : "user",
+      }));
+
+    setMessages(messagesSorted);
+  };
+
   const categoriesLabels = categories.map((category) => ({
     name: category.name,
     thread_id: category.external_thread_id,
@@ -89,10 +102,6 @@ export const ChatAI = () => {
           <div className="flex flex-col gap-2 h-full">
             <div className="flex justify-between space-x-3">
               <Button onClick={() => setChatOpen(!chatOpen)}>X</Button>
-
-              <Button variant="ghost" onClick={() => setMessages([])}>
-                Limpiar
-              </Button>
             </div>
 
             <div className="border-b-2 border-neutral-200 mb-2 " />
@@ -100,13 +109,13 @@ export const ChatAI = () => {
             <div className="space-y-1">
               <span className="text-sm text-neutral-400">Consultar por</span>
 
-              <div className="flex flex-1 gap-2 items-center ">
+              <div className="flex flex-1 gap-2 items-center overflow-x-auto pb-1">
                 <Button
                   variant="outline"
                   className={`inline-flex text-xs p-1 ${
                     !categoryThreadId ? "bg-neutral-200" : "white"
                   } `}
-                  onClick={() => setCategoryThreadId(null)}
+                  onClick={() => handleChangeCategory(null)}
                   size="sm"
                 >
                   Todos
@@ -115,12 +124,12 @@ export const ChatAI = () => {
                   <Button
                     key={thread_id}
                     variant="outline"
-                    className={`inline-flex text-xs  p-1 ${
+                    className={`inline-flex text-xs p-1 ${
                       categoryThreadId === thread_id
                         ? "bg-neutral-200"
                         : "white"
                     } `}
-                    onClick={() => setCategoryThreadId(thread_id)}
+                    onClick={() => handleChangeCategory(thread_id)}
                     title={name}
                   >
                     {name}
