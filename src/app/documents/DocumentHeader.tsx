@@ -55,10 +55,12 @@ export const DocumentHeader = ({ title }: { title?: string }) => {
     }
 
     setDocumentUploaded(
+      // @ts-ignore
       categories.map((category, idx) => ({
         id: idx,
         name: files[idx].name,
         tags: category.tipo,
+        // @ts-ignore
         people: category.personas,
       }))
     );
